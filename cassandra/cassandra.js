@@ -67,6 +67,12 @@ module.exports = function (RED) {
       if (node.port) {
         connectionOptions.protocolOptions = {port: node.port};
       }
+      if (node.localDataCenter) {
+        const loadBalancingPolicy = new cassandra.policies.loadBalancing.DCAwareRoundRobinPolicy(node.localDataCenter);
+        connectionOptions.policies = {
+          loadBalancing: loadBalancingPolicy
+        };
+      }
 
       createConnection(cassandra, connectionOptions, (err, connection) => {
         if (err) {
